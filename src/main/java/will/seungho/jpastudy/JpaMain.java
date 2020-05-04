@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.List;
 
 /**
  * EntityMangerFactory는 Application 전체에서의 단 하나만 생성.
@@ -23,21 +22,21 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
-			// 비영속
-			Member member = new Member();
-			member.setId(100L);
-			member.setName("Will");
+			Member findMember1 = entityManager.find(Member.class, 100L);
+			System.out.println(findMember1.getId());
+			System.out.println(findMember1.getName());
 
-			// 영속
-			entityManager.persist(member);
-			// 이때 DB에 저장되지 않고, 트랜잭션 커밋시 DB에 실제로 저장이 된다!
+			Member findMember2 = entityManager.find(Member.class, 100L);
+			System.out.println(findMember2.getId());
+			System.out.println(findMember2.getName());
 
-			Member findMember = entityManager.find(Member.class, 100L);
-			System.out.println(findMember.getId());
-			System.out.println(findMember.getName());
 			/**
-			 * SELECT 쿼리가 안나감!
-			 * 왜냐 => 1차 캐시에 저장되서 1차 캐쉬에 있는것을 가져오기 때문에!
+			 * 영속성 컨텍스트에 없는 경우는
+			 * DB에서 가져와서 1차 캐시에 저장..
+			 * 그 이후로는 1차캐시에서 값을 가져오기 떄문에
+			 *
+			 * SELECT 쿼리가 첫번째에만 나가고 두번쨰 검색때는 쿼리가 나가지 않음
+			 * (1차 캐시에서 가져오기 때문)
 			 */
 
 			transaction.commit();
