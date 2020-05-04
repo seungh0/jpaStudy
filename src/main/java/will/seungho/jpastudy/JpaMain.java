@@ -22,17 +22,19 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
-			Member findMember1 = entityManager.find(Member.class, 100L);
 
-			Member findMember2 = entityManager.find(Member.class, 100L);
+			Member member = new Member(150L, "A");
+			Member member1 = new Member(160L, "B");
 
-			System.out.println(findMember1 == findMember2); // true
+			entityManager.persist(member);
+			entityManager.persist(member1);
+			System.out.println("===== 쿼리가 안날라가고 쓰기 지연 SQL 저장소에 저장됨!!!=========");
+			System.out.println("===============");
 
 			/**
-			 * 영속 엔티티의 동일성 보장 (1차 캐시가 있어서 가능한 사항~)
-			 *
-			 * 1차캐시로 반복가능한 읽기(REPEATABLE READ) 등급의 Transaction 격리 수준을
-			 * 데이터베이스가 아닌 Application 차원에서 제공해줌.
+			 * 트랜잭션을 지원하는 쓰기 지연
+			 * 커밋하는 시점에 쓰기 지연 SQL 저장소에 있는 쿼리들이 flush() 되며 날라감!
+			 * JDBC Batch
 			 */
 
 			transaction.commit();
