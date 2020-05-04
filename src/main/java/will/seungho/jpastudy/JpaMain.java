@@ -22,19 +22,19 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
-
-			Member member = new Member(150L, "A");
-			Member member1 = new Member(160L, "B");
-
-			entityManager.persist(member);
-			entityManager.persist(member1);
-			System.out.println("===== 쿼리가 안날라가고 쓰기 지연 SQL 저장소에 저장됨!!!=========");
-			System.out.println("===============");
+			Member member = entityManager.find(Member.class, 150L);
+			member.setName("변경감지 테스트");
+			System.out.println("============");
 
 			/**
-			 * 트랜잭션을 지원하는 쓰기 지연
-			 * 커밋하는 시점에 쓰기 지연 SQL 저장소에 있는 쿼리들이 flush() 되며 날라감!
-			 * JDBC Batch
+			 * 변경감지 (Dirty Checking)
+			 * 값만 바꿧는데? UPDATE QUERY가 나간다!
+			 *
+			 * flush() 되면
+			 * 엔티티와 스냅샷을 비교한다!
+			 *
+			 * 변경이 있으면 UPDATE QUERY를 쓰기 지연 SQL 저장소에 저장
+			 * 커밋떄 UPDATE QUERY 날라감~
 			 */
 
 			transaction.commit();
