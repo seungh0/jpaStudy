@@ -23,20 +23,16 @@ public class JpaMain {
 		transaction.begin();
 		try {
 			Member findMember1 = entityManager.find(Member.class, 100L);
-			System.out.println(findMember1.getId());
-			System.out.println(findMember1.getName());
 
 			Member findMember2 = entityManager.find(Member.class, 100L);
-			System.out.println(findMember2.getId());
-			System.out.println(findMember2.getName());
+
+			System.out.println(findMember1 == findMember2); // true
 
 			/**
-			 * 영속성 컨텍스트에 없는 경우는
-			 * DB에서 가져와서 1차 캐시에 저장..
-			 * 그 이후로는 1차캐시에서 값을 가져오기 떄문에
+			 * 영속 엔티티의 동일성 보장 (1차 캐시가 있어서 가능한 사항~)
 			 *
-			 * SELECT 쿼리가 첫번째에만 나가고 두번쨰 검색때는 쿼리가 나가지 않음
-			 * (1차 캐시에서 가져오기 때문)
+			 * 1차캐시로 반복가능한 읽기(REPEATABLE READ) 등급의 Transaction 격리 수준을
+			 * 데이터베이스가 아닌 Application 차원에서 제공해줌.
 			 */
 
 			transaction.commit();
