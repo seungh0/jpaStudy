@@ -23,30 +23,22 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
-//			Member member = new Member();
-//			member.setName("JPA");
-//			entityManager.persist(member);
+			// 비영속
+			Member member = new Member();
+			member.setId(100L);
+			member.setName("Will");
 
-//			Member member = entityManager.find(Member.class, 1L);
-//			System.out.println(member.getName());
+			// 영속
+			entityManager.persist(member);
+			// 이때 DB에 저장되지 않고, 트랜잭션 커밋시 DB에 실제로 저장이 된다!
 
-//			entityManager.remove(member);
-
+			Member findMember = entityManager.find(Member.class, 100L);
+			System.out.println(findMember.getId());
+			System.out.println(findMember.getName());
 			/**
-			 * 변경이 되었는지 트랜잭션이 커밋하는 시점에 체크를 한다.
-			 * 따라서 값만 변경해주면 자동으로 UPDATE QUERY 나가게 됨.
+			 * SELECT 쿼리가 안나감!
+			 * 왜냐 => 1차 캐시에 저장되서 1차 캐쉬에 있는것을 가져오기 때문에!
 			 */
-//			Member member = entityManager.find(Member.class, 2L);
-//			member.setName("GOOOOOOOD");
-
-			List<Member> members = entityManager.createQuery("select m from Member as m", Member.class)
-					.setFirstResult(0)
-					.setMaxResults(5)
-					.getResultList();
-
-			members.stream()
-					.map(Member::getName)
-					.forEach(System.out::println);
 
 			transaction.commit();
 		} catch (Exception e) {
