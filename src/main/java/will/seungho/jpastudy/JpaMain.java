@@ -23,37 +23,24 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
-			Member member = new Member(202L, "Member200");
-			entityManager.persist(member);
-			entityManager.flush();
-			System.out.println("+===========================");
-
+			Member member = entityManager.find(Member.class, 150L); // 영속성 컨텍스트에 올려서 영속상태가 됨!
+			member.setName("BBBBB"); // 변경감지 적용
+//			entityManager.detach(member);
+//			entityManager.clear();
+//			entityManager.close();
+			
 			/**
-			 * flush를 해도 1차 캐쉬는 그대로 유지한다.
-			 * (영속성 컨텍스트를 비우지 않음!!)
-			 *
-			 * 영속성 컨텍스트의 변경내용을 데이터베이스에 동기화.
-			 *
-			 * 영속성 컨텍스트 내의 쓰기지연 SQL 저장소의 쿼리들이 나간다.
-			 * 변경감지.
-			 *
-			 * 영속성 컨텍스틀 플러시하는 3가지 방법
-			 * 1. entityManager.flush() 직접 호출
-			 * 2. 트랜잭션 커밋
-			 * 3. JPQL 쿼리 실행
-			 *
-			 * cf) JPQL 쿼리 실행시 플러시가 자동으로 호출 되는 이유
-			 * 예를 들어 검색하려면 DB에서 가져와야하는데... 그 전에 반영을 해야함!
+			 * 준영속 상태로 만들면, 영속성 컨텍스트에서 엔티티를 관리를 하지 않아
+			 * 변경감지 적용 X
+			 * 따라서 UPDATE 쿼리가 나가지 않는다~
 			 */
 
-//			entityManager.setFlushMode(FlushModeType.AUTO);
-//			entityManager.setFlushMode(FlushModeType.COMMIT);
 			/**
-			 * 플러시 모드 옵션
-			 * AUTO = 커밋, 쿼리 실행시 플러시(기본값)
-			 * COMMIT = 커밋할 대만 플러시
+			 * 준영속 상태로 만드는 방법
+			 * 1. em.detach(entity) - 특정 엔티티만 준영속상태로 전환
+			 * 2. em.clear() - 영속성 컨텍스트를 완전히 초기화
+			 * 3. em.close() - 영속성 컨텍스트를 종료
 			 */
-
 
 			transaction.commit();
 		} catch (Exception e) {
