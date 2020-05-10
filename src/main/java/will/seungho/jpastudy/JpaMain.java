@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.List;
 
 public class JpaMain {
 
@@ -18,25 +17,25 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
-			Team team = new Team("teamA");
-			entityManager.persist(team);
-
 			Member member = Member.builder()
-					.name("승호")
-					.team(team)
+					.name("seungho")
 					.build();
 			entityManager.persist(member);
 
-			entityManager.flush();
-			entityManager.clear();
+			Team team = Team.builder()
+					.name("teamA")
+					.build();
+			team.getMembers().add(member); // Member.teamID은 null
+			entityManager.persist(team);
 
-			Member findMember = entityManager.find(Member.class, member.getId());
-			List<Member> members = findMember.getTeam().getMembers();
+			/**
+			 * Why?
+			 *
+			 * 연관관계 주인이 아닌 Team.member (mappedBy)은 읽기만 가능하다.
+			 * 따라서 team.getMembers().add(member) 해봤자
+			 * 안들어감!
+			 */
 
-			for (Member m : members) {
-				System.out.println(m.getId());
-				System.out.println(m.getName());
-			}
 			transaction.commit();
 		} catch (Exception e) {
 			entityManager.close();
