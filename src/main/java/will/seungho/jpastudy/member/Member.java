@@ -3,11 +3,14 @@ package will.seungho.jpastudy.member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import will.seungho.jpastudy.team.Team;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Getter
 @NoArgsConstructor
@@ -20,12 +23,14 @@ public class Member {
 
 	private String name;
 
-	private Long teamId;
+	@ManyToOne
+	@JoinColumn(name = "TEAM_ID")
+	private Team team;
 
 	@Builder
-	public Member(String name, Long teamId) {
+	public Member(String name, Team team) {
 		this.name = name;
-		this.teamId = teamId;
+		this.team = team;
 	}
 
 }
