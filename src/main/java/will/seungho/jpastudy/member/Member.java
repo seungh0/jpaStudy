@@ -38,6 +38,20 @@ public class Member {
 	public Member(String name, Team team) {
 		this.name = name;
 		this.team = team;
+		team.getMembers().add(this);
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
+	public void changeTeam(Team team) {
+		/**
+		 * 연관관계 편의 메소드
+		 * 팁!
+		 */
+		this.team = team;
+		team.getMembers().add(this);
 	}
 
 }

@@ -29,7 +29,6 @@ import java.util.List;
  *
  * 테이블은 = 연관관계 1개
  * 회원 <-> 팀의 연관관계 1개 (양방향)
- *
  */
 @Getter
 @NoArgsConstructor
@@ -50,5 +49,18 @@ public class Team {
 	public Team(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * 이쪽으로도 해도됨!
+	 * 한쪽에서만 정의!!!
+	 * (아니면 헷갈려서 문제가 생길 확률 높음)
+	 *
+	 * Member.changeTeam() or Team.addMember()
+	 */
+	public void addMember(Member member) {
+		member.setTeam(this);
+		members.add(member);
+	}
+
 
 }
