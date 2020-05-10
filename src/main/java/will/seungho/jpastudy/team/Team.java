@@ -1,4 +1,4 @@
-package will.seungho.jpastudy.member;
+package will.seungho.jpastudy.team;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Member {
+public class Team {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +20,9 @@ public class Member {
 
 	private String name;
 
-	private Long teamId;
-
 	@Builder
-	public Member(String name, Long teamId) {
+	public Team(String name) {
 		this.name = name;
-		this.teamId = teamId;
 	}
 
 }
