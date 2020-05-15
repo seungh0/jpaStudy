@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,15 +14,14 @@ import javax.persistence.InheritanceType;
 @Getter
 @NoArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 /**
- * SINGLE_TABLE 전략
- * ITEM 테이블에 모든 하위 클래스의 필드가 들어감
+ * 구현 클래스 마다 테이블 전략(TABLE_PER_CLASS)
  *
- * 성능상은 이점이 있음
+ * INSERT시는 좋은데,
+ * SELECT시는 UNION을 이용한 복잡한 쿼리가 나감(비효율적임)
  */
-public class Items {
+public abstract class Items {
 
 	@Id
 	@GeneratedValue
