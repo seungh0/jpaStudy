@@ -26,10 +26,6 @@ public class JpaMain {
 			entityManager.flush();
 			entityManager.clear();
 
-			Movie findMovie = entityManager.find(Movie.class, movie.getId());
-			// Inner join을 통해 가져옴
-			System.out.println(findMovie.getDirector());
-
 			transaction.commit();
 		} catch (Exception e) {
 			entityManager.close();

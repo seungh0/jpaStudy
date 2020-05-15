@@ -15,8 +15,14 @@ import javax.persistence.InheritanceType;
 @Getter
 @NoArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn() // DTYPE = ALBUM & MOVIE & BOOK 필드 추가
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn
+/**
+ * SINGLE_TABLE 전략
+ * ITEM 테이블에 모든 하위 클래스의 필드가 들어감
+ *
+ * 성능상은 이점이 있음
+ */
 public class Items {
 
 	@Id
