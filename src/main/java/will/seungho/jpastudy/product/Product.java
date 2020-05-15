@@ -2,6 +2,7 @@ package will.seungho.jpastudy.product;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import will.seungho.jpastudy.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Product {
+public class Product extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

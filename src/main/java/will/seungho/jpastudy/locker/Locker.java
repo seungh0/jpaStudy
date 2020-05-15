@@ -2,6 +2,7 @@ package will.seungho.jpastudy.locker;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import will.seungho.jpastudy.BaseEntity;
 import will.seungho.jpastudy.member.Member;
 
 import javax.persistence.Entity;
@@ -13,7 +14,7 @@ import javax.persistence.OneToOne;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Locker {
+public class Locker extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

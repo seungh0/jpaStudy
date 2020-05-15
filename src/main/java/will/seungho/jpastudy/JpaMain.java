@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.time.LocalDateTime;
 
 public class JpaMain {
 
@@ -21,7 +22,14 @@ public class JpaMain {
 			movie.setDirector("director");
 			movie.setName("name");
 			movie.setPrice(100000);
+
+			// MappedSuperClass
+			movie.setCreatedBy("seungho");
+			movie.setCreatedDateTime(LocalDateTime.now());
+			movie.setLastModifiedBy("seungho");
+			movie.setLastModifiedDateTime(LocalDateTime.now());
 			entityManager.persist(movie);
+
 
 			entityManager.flush();
 			entityManager.clear();

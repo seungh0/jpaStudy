@@ -1,5 +1,6 @@
 package will.seungho.jpastudy.product;
 
+import will.seungho.jpastudy.BaseEntity;
 import will.seungho.jpastudy.member.Member;
 
 import javax.persistence.Entity;
@@ -11,7 +12,7 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
-public class Orders {
+public class Orders extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,6 +3,7 @@ package will.seungho.jpastudy.team;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import will.seungho.jpastudy.BaseEntity;
 import will.seungho.jpastudy.member.Member;
 
 import javax.persistence.Entity;
@@ -33,7 +34,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Team {
+public class Team extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

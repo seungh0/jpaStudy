@@ -3,6 +3,7 @@ package will.seungho.jpastudy.item;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import will.seungho.jpastudy.BaseEntity;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -17,7 +18,7 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
-public class Items {
+public class Items extends BaseEntity {
 
 	@Id
 	@GeneratedValue
