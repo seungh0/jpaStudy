@@ -1,13 +1,11 @@
 package will.seungho.jpastudy;
 
-import will.seungho.jpastudy.member.Member;
-import will.seungho.jpastudy.team.Team;
+import will.seungho.jpastudy.item.Movie;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.List;
 
 public class JpaMain {
 
@@ -18,26 +16,20 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
-			Team team = Team.builder()
-					.name("teamA")
-					.build();
-			entityManager.persist(team);
+			Movie movie = new Movie();
+			movie.setActor("actor");
+			movie.setDirector("director");
+			movie.setName("name");
+			movie.setPrice(100000);
+			entityManager.persist(movie);
 
-			Member member = Member.builder()
-					.name("seungho")
-					.team(team)
-					.build();
-			entityManager.persist(member); // 1차 캐시 저장
+			entityManager.flush();
+			entityManager.clear();
 
-			team.addMember(member);
+			Movie findMovie = entityManager.find(Movie.class, movie.getId());
+			// Inner join을 통해 가져옴
+			System.out.println(findMovie.getDirector());
 
-
-			Team findTeam = entityManager.find(Team.class, team.getId());
-
-			List<Member> memberList = findTeam.getMembers();
-			for (Member m : memberList) {
-				System.out.println(m.getName());
-			}
 			transaction.commit();
 		} catch (Exception e) {
 			entityManager.close();
