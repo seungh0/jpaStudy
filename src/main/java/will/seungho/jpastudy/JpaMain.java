@@ -1,12 +1,20 @@
 package will.seungho.jpastudy;
 
 import will.seungho.jpastudy.member.Member;
-import will.seungho.jpastudy.team.Team;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+
+/**
+ * 프록시 기초
+ *
+ * em.find() vs em.getReference()
+ *
+ * em.find() => 데이터베이스를 통해서 실제 엔티티 객체를 조회
+ * em.getReference() => 데이터 베이스 조회를 미루는 가짜(프록시) 엔티티 객체 조회
+ */
 
 public class JpaMain {
 
@@ -17,23 +25,38 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
-			Team team = Team.builder()
-					.name("team")
-					.build();
-			entityManager.persist(team);
-
 			Member member = Member.builder()
 					.name("name")
-					.team(team)
 					.build();
 			entityManager.persist(member);
 
-			Member findMember = entityManager.find(Member.class, member.getId());
-			// 멤버 + 팀을 가져옴
-			printMemberAndTeam(findMember);
+			entityManager.flush();
+			entityManager.clear();
 
-			// 멤버만 가져옴 (팀을 가져오는 쿼리가 나가지 않아도 됨)
-			printMember(findMember);
+			/**
+			 * 	em.find()
+			 */
+//			Member findMember = entityManager.find(Member.class, member.getId());
+//			System.out.println(findMember.getName());
+
+			/**
+			 * em.getReference()
+			 */
+//			entityManager.getReference(Member.class, member.getId());  // => SELECT 쿼리가 안나감!
+
+			Member findMember = entityManager.getReference(Member.class, member.getId());
+			System.out.println(findMember.getClass());
+			// class will.seungho.jpastudy.member.Member$HibernateProxy$B1yNbYc7
+			// 프록시 클래스
+
+			System.out.println(findMember.getId());
+			System.out.println(findMember.getName()); // => 실제 데이터를 사용하는 경우 SELECT 쿼리가 나감
+
+			/**
+			 * id 호출 후 (id는 있어서)
+			 * name의 실제 데이터 값이 없으니깐
+			 * SELECT 쿼리를 해서 데이터를 가져옴
+			 */
 
 			transaction.commit();
 		} catch (Exception e) {
@@ -41,18 +64,6 @@ public class JpaMain {
 		} finally {
 			entityManagerFactory.close();
 		}
-	}
-
-	private static void printMember(Member findMember) {
-		System.out.println(findMember.getName());
-	}
-
-	private static void printMemberAndTeam(Member findMember) {
-		String userName = findMember.getName();
-		System.out.println(userName);
-
-		Team team = findMember.getTeam();
-		System.out.println(team);
 	}
 
 }

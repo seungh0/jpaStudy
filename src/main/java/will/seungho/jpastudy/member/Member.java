@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import will.seungho.jpastudy.BaseEntity;
-import will.seungho.jpastudy.locker.Locker;
-import will.seungho.jpastudy.product.Orders;
 import will.seungho.jpastudy.team.Team;
 
 import javax.persistence.Entity;
@@ -14,10 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -49,18 +43,10 @@ public class Member extends BaseEntity {
 	@JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
 	private Team team;
 
-	@OneToOne
-	@JoinColumn(name = "LOCKER_ID")
-	private Locker locker;
-
-	@OneToMany(mappedBy = "member")
-	private List<Orders> memberProducts = new ArrayList<>();
-
 	@Builder
 	public Member(String name, Team team) {
 		this.name = name;
 		this.team = team;
-		team.getMembers().add(this);
 	}
 
 	public void setTeam(Team team) {

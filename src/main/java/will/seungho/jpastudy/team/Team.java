@@ -4,15 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import will.seungho.jpastudy.BaseEntity;
-import will.seungho.jpastudy.member.Member;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -42,26 +38,9 @@ public class Team extends BaseEntity {
 
 	private String name;
 
-	// 반대 편 사이트에는 Member.team으로 매핑이 되있다고 알려주는 mappedBy
-	@OneToMany(mappedBy = "team")
-	private List<Member> members = new ArrayList<>();
-
 	@Builder
 	public Team(String name) {
 		this.name = name;
 	}
-
-	/**
-	 * 이쪽으로도 해도됨!
-	 * 한쪽에서만 정의!!!
-	 * (아니면 헷갈려서 문제가 생길 확률 높음)
-	 *
-	 * Member.changeTeam() or Team.addMember()
-	 */
-	public void addMember(Member member) {
-		member.setTeam(this);
-		members.add(member);
-	}
-
 
 }
