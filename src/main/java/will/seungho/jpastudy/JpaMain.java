@@ -7,15 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-
-/**
- * 프록시 기초
- *
- * em.find() vs em.getReference()
- *
- * em.find() => 데이터베이스를 통해서 실제 엔티티 객체를 조회
- * em.getReference() => 데이터 베이스 조회를 미루는 가짜(프록시) 엔티티 객체 조회
- */
+import java.util.List;
 
 public class JpaMain {
 
@@ -53,6 +45,12 @@ public class JpaMain {
 			System.out.println(findMember.getTeam().getClass()); // 실제 객체
 
 			System.out.println(findMember.getTeam().getName()); // 실제 Team을 사용하는 시점
+
+			List<Member> members = entityManager.createQuery("select m from Member m", Member.class)
+					.getResultList();
+			// N+1 문제 발생
+			// SQL: select * from member
+			// SQL: select * from team where team_id = member.team
 
 			transaction.commit();
 		} catch (Exception e) {

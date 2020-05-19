@@ -26,6 +26,12 @@ public class Member extends BaseEntity {
 	@JoinColumn(name = "TEAM_ID")
 	private Team team;
 
+	/**
+	 * 가급적 지연 로딩만 사용 (특히 실무에서)
+	 * 즉시 로딩을 적용하면 예상하지 못한 SQL이 발생한다.
+	 * + 즉시 로딩은 JPQL에서 N+1 문제를 일으킨다!!!
+	 */
+
 	@Builder
 	public Member(String name, Team team) {
 		this.name = name;
