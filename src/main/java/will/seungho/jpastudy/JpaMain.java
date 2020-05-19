@@ -41,14 +41,17 @@ public class JpaMain {
 			entityManager.clear();
 
 			/**
-			 * Lazy 로딩 (지연 로딩)
+			 * Eager 로딩 (즉시 로딩)
+			 * em.find()떄 팀과 멤버를 모두 가져옴
 			 *
-			 * 실제 team을 사용하는 시점에 초기화
+			 * 전반적으로 팀과 멤버를 같이 쓴다하면,
+			 * 지연 로딩을 사용할떄는 쿼리가 * 2번 나가니깐,
+			 * 즉시로딩으로 설정해서 애초에 처음에 다 가져오도록 설정.
 			 */
 			Member findMember = entityManager.find(Member.class, member.getId());
-			System.out.println(findMember.getTeam().getClass()); // Proxy 객체
+			System.out.println("요 시점에 Membmer, Team을 모두 쿼리로 가져온다");
+			System.out.println(findMember.getTeam().getClass()); // 실제 객체
 
-			System.out.println("======== 요 시점에 Team 쿼리가 나감=== ");
 			System.out.println(findMember.getTeam().getName()); // 실제 Team을 사용하는 시점
 
 			transaction.commit();

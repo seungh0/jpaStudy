@@ -22,7 +22,7 @@ public class Member extends BaseEntity {
 	/**
 	 * Member를 조회할때, Team도 함께 조회해야ㄴ하나?
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "TEAM_ID")
 	private Team team;
 
