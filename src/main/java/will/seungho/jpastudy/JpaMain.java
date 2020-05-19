@@ -1,7 +1,7 @@
 package will.seungho.jpastudy;
 
-import org.hibernate.Hibernate;
 import will.seungho.jpastudy.member.Member;
+import will.seungho.jpastudy.team.Team;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,37 +26,30 @@ public class JpaMain {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		try {
+			Team team = Team.builder()
+					.name("teamA")
+					.build();
+			entityManager.persist(team);
+
 			Member member = Member.builder()
-					.name("name")
+					.name("nameA")
+					.team(team)
 					.build();
 			entityManager.persist(member);
 
 			entityManager.flush();
 			entityManager.clear();
 
-//			Member member1 = entityManager.getReference(Member.class, member.getId());
-//			System.out.println(member1.getClass());
-//
-//			Member reference = entityManager.getReference(Member.class, member1.getId());
-//			System.out.println(reference.getClass());
-//
-//			System.out.println(member1 == reference); // 같은 프록시
-
-			Member member1 = entityManager.getReference(Member.class, member.getId());
-			System.out.println(member1.getClass()); // 프록시
-
-			Hibernate.initialize(member1); // 강제 초기화
-
-			entityManager.detach(member1); // or entityManger.close()
-			// 준영속 상태를 만듬
-
-			System.out.println(member1.getName());
-			//org.hibernate.LazyInitializationException: could not initialize proxy [will.seungho.jpastudy.member.Member#30] - no Session
-
 			/**
-			 * 영속성 컨택스트의 도움을 받을 수 없는 준 영속 상태일 경우
-			 * LazyInitalizationException 예외를 터트림!
+			 * Lazy 로딩 (지연 로딩)
+			 *
+			 * 실제 team을 사용하는 시점에 초기화
 			 */
+			Member findMember = entityManager.find(Member.class, member.getId());
+			System.out.println(findMember.getTeam().getClass()); // Proxy 객체
+
+			System.out.println("======== 요 시점에 Team 쿼리가 나감=== ");
+			System.out.println(findMember.getTeam().getName()); // 실제 Team을 사용하는 시점
 
 			transaction.commit();
 		} catch (Exception e) {
