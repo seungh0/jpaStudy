@@ -24,16 +24,20 @@ public class JpaMain {
 			parent.addChild(child1);
 			parent.addChild(child2);
 
-			entityManager.persist(parent);
+			entityManager.persist(parent); // Parent만 persist()함
 
 			entityManager.flush();
 			entityManager.clear();
 
 			Parent findParent = entityManager.find(Parent.class, parent.getId());
-			findParent.getChildren().remove(0); // Case 1.  Child 필드가 고아 객체가 되어서 삭제된다.
+			entityManager.remove(findParent); // Parent만 remove()함ㄴ
 
-			// Case 2. Childs 모두 제거된다.
-			entityManager.remove(findParent);
+			/**
+			 * CasCade.ALL + orphanRemove = true 둘다 설정하면
+			 * 1. Child의 생명주기를 Partent가 관리하게 된다. (Child repository가 필요 없음)
+			 * 2. 부모 엔티티를 통해서 자식의 생명 주기를 관리할 수 있다.
+			 * 3. DDD의 Aggregate Root 개념을 구현할때 유용하다.
+			 */
 
 			transaction.commit();
 		} catch (Exception e) {
