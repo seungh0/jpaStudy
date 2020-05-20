@@ -25,19 +25,15 @@ public class JpaMain {
 			parent.addChild(child2);
 
 			entityManager.persist(parent);
-//			entityManager.persist(child1);
-//			entityManager.persist(child2);
 
-			/**
-			 * persist * 3번 하기 싫음.
-			 * => CasCade
-			 *
-			 * CascadeType.ALL
-			 * CascadeType.persist
-			 *
-			 * Parent만 child와 연관관계가 있을때만
-			 * 사용해야함!
-			 */
+			entityManager.flush();
+			entityManager.clear();
+
+			Parent findParent = entityManager.find(Parent.class, parent.getId());
+			findParent.getChildren().remove(0); // Case 1.  Child 필드가 고아 객체가 되어서 삭제된다.
+
+			// Case 2. Childs 모두 제거된다.
+			entityManager.remove(findParent);
 
 			transaction.commit();
 		} catch (Exception e) {
