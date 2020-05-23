@@ -4,9 +4,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import will.seungho.jpastudy.BaseEntity;
-import will.seungho.jpastudy.team.Team;
+import will.seungho.jpastudy.common.Address;
+import will.seungho.jpastudy.common.Period;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor
@@ -19,23 +27,29 @@ public class Member extends BaseEntity {
 
 	private String name;
 
-	/**
-	 * Member를 조회할때, Team도 함께 조회해야ㄴ하나?
-	 */
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "TEAM_ID")
-	private Team team;
+	@Embedded
+	private Period period;
 
-	/**
-	 * 가급적 지연 로딩만 사용 (특히 실무에서)
-	 * 즉시 로딩을 적용하면 예상하지 못한 SQL이 발생한다.
-	 * + 즉시 로딩은 JPQL에서 N+1 문제를 일으킨다!!!
-	 */
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name = "city",
+					column = @Column(name = "HOME_CITY")),
+			@AttributeOverride(name = "street",
+					column = @Column(name = "HOME_STREET")),
+			@AttributeOverride(name = "zipCode",
+					column = @Column(name = "HOME_ZIP_CODE"))
+	})
+	private Address homeAddress;
+
+	@Embedded
+	private Address workAddress;
 
 	@Builder
-	public Member(String name, Team team) {
+	public Member(String name, Period period, Address homeAddress, Address workAddress) {
 		this.name = name;
-		this.team = team;
+		this.period = period;
+		this.homeAddress = homeAddress;
+		this.workAddress = workAddress;
 	}
 
 }
