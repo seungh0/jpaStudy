@@ -5,16 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import will.seungho.jpastudy.BaseEntity;
 import will.seungho.jpastudy.common.Address;
-import will.seungho.jpastudy.common.Period;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -23,32 +19,35 @@ public class Member extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "MEMBER_ID")
 	private Long id;
 
 	private String name;
 
 	@Embedded
-	private Period period;
-
-	@Embedded
-	@AttributeOverrides({
-			@AttributeOverride(name = "city",
-					column = @Column(name = "HOME_CITY")),
-			@AttributeOverride(name = "street",
-					column = @Column(name = "HOME_STREET")),
-			@AttributeOverride(name = "zipCode",
-					column = @Column(name = "HOME_ZIP_CODE"))
-	})
-	private Address homeAddress;
-
-	@Embedded
 	private Address workAddress;
 
+	/**
+	 * 값 타입 컬렉션
+	 *
+	 * @ElementCollection, @CollectionTable 사용
+	 * 데이터베이스는 컬렉션을 같은 테이블에 저장할 수 없다.
+	 * 컬렉션을 저장하기 위한 별도의 테이블이 필요하다.
+	 */
+	@ElementCollection
+	@CollectionTable(name = "FAVORITE_FOOD",
+			joinColumns = @JoinColumn(name = "MEMBER_ID"))
+	@Column(name = "FOOD_NAME")
+	private Set<String> favoriteFoods = new HashSet<>();
+
+	@ElementCollection
+	@CollectionTable(name = "ADDRESS",
+			joinColumns = @JoinColumn(name = "MEMBER_ID"))
+	private List<Address> addressHistory = new ArrayList<>();
+
 	@Builder
-	public Member(String name, Period period, Address homeAddress, Address workAddress) {
+	public Member(String name, Address workAddress) {
 		this.name = name;
-		this.period = period;
-		this.homeAddress = homeAddress;
 		this.workAddress = workAddress;
 	}
 
