@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import will.seungho.jpastudy.BaseEntity;
 import will.seungho.jpastudy.common.Address;
+import will.seungho.jpastudy.common.AddressEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -40,10 +41,9 @@ public class Member extends BaseEntity {
 	@Column(name = "FOOD_NAME")
 	private Set<String> favoriteFoods = new HashSet<>();
 
-	@ElementCollection
-	@CollectionTable(name = "ADDRESS",
-			joinColumns = @JoinColumn(name = "MEMBER_ID"))
-	private List<Address> addressHistory = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "MEMBER_ID")
+	private List<AddressEntity> addressHistory = new ArrayList<>();
 
 	@Builder
 	public Member(String name, Address workAddress) {
