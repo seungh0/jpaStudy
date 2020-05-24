@@ -35,17 +35,23 @@ public class JpaMain {
 			entityManager.clear();
 
 			System.out.println("=====================================");
-			Member findMembmer = entityManager.find(Member.class, member.getId());
-			/**
-			 * 컬렉션들은 지연로딩으로 가지옴
-			 */
-			for (Address address : findMembmer.getAddressHistory()) {
-				System.out.println(address.getCity());
-			}
+			Member findMember = entityManager.find(Member.class, member.getId());
+			findMember.changeAddress(new Address("city2", "street2", "zipCode2"));
 
-			for (String favoriteFood : findMembmer.getFavoriteFoods()) {
-				System.out.println(favoriteFood);
-			}
+			findMember.getFavoriteFoods().remove("치킨");
+			findMember.getFavoriteFoods().add("한식");
+			// 실제 DB 쿼리가 날라감
+
+			// equals로 비교후 삭제 (equals(), hashCode() 재정의)
+			findMember.getAddressHistory().remove(new Address("city1", "street1", "zipCode1"));
+			findMember.getAddressHistory().add(new Address("city3", "street3", "zipCode3"));
+			/**
+			 * 값은 변경하면 추적이 어렵다 (엔티티와 다르게 식별자 개념이 없다)
+			 * 값 타입 컬렉션에 변경사항이 발생하면, 주인 엔티티와 연관된 모든 데이터를 삭제하고,
+			 * 값 타입 컬렉션에 있는 현재 값을 모두 다시 저장한다.
+			 * => 쿼리수 문제....
+			 * 쓰면 문제가 많음
+			 */
 
 			transaction.commit();
 		} catch (Exception e) {
