@@ -1,13 +1,13 @@
 package will.seungho.jpastudy;
 
 import will.seungho.jpastudy.common.Address;
-import will.seungho.jpastudy.common.AddressEntity;
 import will.seungho.jpastudy.member.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpaMain {
 
@@ -22,23 +22,20 @@ public class JpaMain {
 					.name("name")
 					.workAddress(new Address("city", "street", "zipCode"))
 					.build();
-
-			member.getFavoriteFoods().add("치킨");
-			member.getFavoriteFoods().add("피자");
-			member.getFavoriteFoods().add("족발");
-
-			member.getAddressHistory().add(new AddressEntity("city1", "street1", "zipCode1"));
-			member.getAddressHistory().add(new AddressEntity("city2", "street2", "zipCode2"));
-
 			entityManager.persist(member);
 
-			entityManager.flush();
-			entityManager.clear();
+			/**
+			 * JPQL
+			 * 테이블이 아닌 객체를 대상으로 검색하는 객체지향 쿼리
+			 * SQL을 추상화해서 특정 데이터베이스 SQL에 의존X
+			 * JPQL을 한마디로 정의하면 객체 지향 SQL
+			 */
+			List<Member> members = entityManager.createQuery("select m From Member m where m.name like '%name%'", Member.class)
+					.getResultList();
 
-			System.out.println("=====================================");
-			Member findMember = entityManager.find(Member.class, member.getId());
-			findMember.getAddressHistory().add(new AddressEntity("good", "good", "good"));
-
+			for (Member findMember : members) {
+				System.out.println(findMember.getName());
+			}
 
 			transaction.commit();
 		} catch (Exception e) {
