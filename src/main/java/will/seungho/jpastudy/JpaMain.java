@@ -7,6 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class JpaMain {
@@ -25,17 +28,15 @@ public class JpaMain {
 			entityManager.persist(member);
 
 			/**
-			 * JPQL
-			 * 테이블이 아닌 객체를 대상으로 검색하는 객체지향 쿼리
-			 * SQL을 추상화해서 특정 데이터베이스 SQL에 의존X
-			 * JPQL을 한마디로 정의하면 객체 지향 SQL
+			 * Criteria
 			 */
-			List<Member> members = entityManager.createQuery("select m From Member m where m.name like '%name%'", Member.class)
-					.getResultList();
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Member> query = cb.createQuery(Member.class);
+			Root<Member> m = query.from(Member.class);
+			CriteriaQuery<Member> cq = query.select(m).where(cb.equal(m.get("name"), "kim"));
 
-			for (Member findMember : members) {
-				System.out.println(findMember.getName());
-			}
+			List<Member> members = entityManager.createQuery(cq)
+					.getResultList();
 
 			transaction.commit();
 		} catch (Exception e) {
