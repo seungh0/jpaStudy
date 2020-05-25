@@ -7,9 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class JpaMain {
@@ -27,15 +24,7 @@ public class JpaMain {
 					.build();
 			entityManager.persist(member);
 
-			/**
-			 * Criteria
-			 */
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Member> query = cb.createQuery(Member.class);
-			Root<Member> m = query.from(Member.class);
-			CriteriaQuery<Member> cq = query.select(m).where(cb.equal(m.get("name"), "kim"));
-
-			List<Member> members = entityManager.createQuery(cq)
+			List<Member> members = entityManager.createNativeQuery("select MEMBER_ID, CITY, STREET, ZIPCODE, NAME from MEMBER")
 					.getResultList();
 
 			transaction.commit();
